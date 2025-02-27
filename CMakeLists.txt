@@ -15,5 +15,5 @@ add_subdirectory(src/server)
 add_executable(todo_api src/main.cpp)
 
 # Link libraries to the executable
-target_link_libraries(todo_api PRIVATE server fmt::fmt Drogon::Drogon)
+target_link_libraries(todo_api PRIVATE server)
 
