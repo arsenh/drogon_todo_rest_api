@@ -6,7 +6,7 @@ class Server
 {
 public:
     Server()
-        :   mAddr{"0.0.0.0"},
+        :   mAddr{"127.0.0.1"},
             mPort{8080}
     {
 

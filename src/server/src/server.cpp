@@ -1,16 +1,20 @@
 #include "server.hpp"
+#include "todoController.h"
 
 #include <drogon/drogon.h>
 
 #include <iostream>
+#include <memory>
 
 void Server::run() const
 {
     std::cout << "Server starting..." << std::endl;
-    drogon::app().setLogPath("./")
-     .setLogLevel(trantor::Logger::kWarn)
-     .addListener(mAddr, mPort)
-     .setThreadNum(16)
-     .run();
+    auto todo = std::make_shared<TodoController>();
 
+    drogon::app().setLogPath("./")
+     .setLogLevel(trantor::Logger::kTrace)
+     .addListener(mAddr, mPort)
+     .setThreadNum(2)
+     .registerController(todo)
+     .run();
 }
