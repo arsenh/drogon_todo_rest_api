@@ -19,10 +19,13 @@ public:
     METHOD_ADD(Todo::delete_todo_by_id, "/todos/{id}", Delete, "RequestLogger");
     METHOD_LIST_END
 
-protected:
+private:
     static void get_todos(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
     static void get_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
     static void create_todo(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
     static void update_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
     static void delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+
+private:
+    TodoService m_todo_service{};
 };

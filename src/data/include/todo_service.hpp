@@ -22,5 +22,5 @@ public:
 private:
     void create_dummy_data_for_test();
 private:
-    std::vector<TodoEntity> mTodos;
+    std::vector<TodoEntity> m_todos;
 };
