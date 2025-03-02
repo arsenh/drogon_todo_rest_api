@@ -2,10 +2,6 @@
 
 #include <drogon/drogon.h>
 
-//The following headers are required for automatic detection of controllers and filters
-#include "todoController.hpp"
-#include "request_log.hpp"
-
 void Server::run() const
 {
     LOG_INFO << "Server started...";

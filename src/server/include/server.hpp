@@ -2,6 +2,10 @@
 #include <string>
 #include <utility>
 
+//The following headers are required for automatic detection of controllers and filters
+#include "todoController.hpp"
+#include "request_log.hpp"
+
 class Server
 {
 public:

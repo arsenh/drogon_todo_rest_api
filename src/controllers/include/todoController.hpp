@@ -1,5 +1,7 @@
 #pragma once
 
+#include "todo_service.hpp"
+
 #include <drogon/HttpController.h>
 
 #include <string>
@@ -15,15 +17,12 @@ public:
     METHOD_ADD(Todo::create_todo, "/todos", Post, "RequestLogger");
     METHOD_ADD(Todo::update_todo_by_id, "/todos/{id}", Patch, "RequestLogger");
     METHOD_ADD(Todo::delete_todo_by_id, "/todos/{id}", Delete, "RequestLogger");
-
     METHOD_LIST_END
 
 protected:
-    //void test_api(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
-
-    void get_todos(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
-    void get_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
-    void create_todo(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
-    void update_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
-    void delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+    static void get_todos(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+    static void get_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+    static void create_todo(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+    static void update_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
+    static void delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
 };
