@@ -2,21 +2,48 @@
 
 #include <format>
 
-void Todo::test_api(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback)
+void Todo::get_todos(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
 {
-    static int counter = 0;
-    //LOG_DEBUG << "test_api called" << counter;
-
     Json::Value data;
     data["result"] = "ok";
-    data["message"] = std::format("Hello World! {}", counter);
+    data["message"] = std::format("call: {}", "get_todos");
     auto resp = HttpResponse::newHttpJsonResponse(data);
-    ++counter;
     callback(resp);
 }
 
-std::string Todo::getPatternPrefix(std::string pattern)
+void Todo::get_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
 {
-    return std::format("{}{}", prefix, pattern);
+    Json::Value data;
+    data["result"] = "ok";
+    data["message"] = std::format("call: {}", "get_todo_by_id");
+    auto resp = HttpResponse::newHttpJsonResponse(data);
+    callback(resp);
+}
+
+void Todo::create_todo(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+{
+    Json::Value data;
+    data["result"] = "ok";
+    data["message"] = std::format("call: {}", "create_todo");
+    auto resp = HttpResponse::newHttpJsonResponse(data);
+    callback(resp);
+}
+
+void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+{
+    Json::Value data;
+    data["result"] = "ok";
+    data["message"] = std::format("call: {}", "update_todo_by_id");
+    auto resp = HttpResponse::newHttpJsonResponse(data);
+    callback(resp);
+}
+
+void Todo::delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+{
+    Json::Value data;
+    data["result"] = "ok";
+    data["message"] = std::format("call: {}", "delete_todo_by_id");
+    auto resp = HttpResponse::newHttpJsonResponse(data);
+    callback(resp);
 }
 
