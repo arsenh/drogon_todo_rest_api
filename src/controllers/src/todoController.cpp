@@ -1,11 +1,11 @@
-#include "todoController.h"
+#include "todoController.hpp"
 
 #include <format>
 
-void TodoController::test_api(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback)
+void Todo::test_api(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback)
 {
     static int counter = 0;
-    LOG_DEBUG << "test_api called" << counter;
+    //LOG_DEBUG << "test_api called" << counter;
 
     Json::Value data;
     data["result"] = "ok";
@@ -15,7 +15,7 @@ void TodoController::test_api(const HttpRequestPtr &req, std::function<void(cons
     callback(resp);
 }
 
-std::string TodoController::getPatternPrefix(std::string pattern)
+std::string Todo::getPatternPrefix(std::string pattern)
 {
     return std::format("{}{}", prefix, pattern);
 }

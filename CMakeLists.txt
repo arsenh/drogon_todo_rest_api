@@ -10,6 +10,8 @@ find_package(Drogon REQUIRED)
 
 # Add subdirectories (static libraries)
 add_subdirectory(src/server)
+add_subdirectory(src/controllers)
+add_subdirectory(src/middlewares_filters)
 
 # Define the executable
 add_executable(todo_api src/main.cpp)

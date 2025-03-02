@@ -1,20 +1,18 @@
 #include "server.hpp"
-#include "todoController.h"
 
 #include <drogon/drogon.h>
 
-#include <iostream>
-#include <memory>
+//The following headers are required for automatic detection of controllers and filters
+#include "todoController.hpp"
+#include "request_log.hpp"
 
 void Server::run() const
 {
-    std::cout << "Server starting..." << std::endl;
-    auto todo = std::make_shared<TodoController>();
+    LOG_INFO << "Server started...";
 
-    drogon::app().setLogPath("./")
-     .setLogLevel(trantor::Logger::kTrace)
+    drogon::app().setLogPath("")
+     .setLogLevel(trantor::Logger::kDebug)
      .addListener(mAddr, mPort)
      .setThreadNum(2)
-     .registerController(todo)
      .run();
 }
