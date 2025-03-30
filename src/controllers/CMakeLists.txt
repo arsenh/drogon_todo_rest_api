@@ -2,9 +2,11 @@ add_library(controllers STATIC)
 
 target_sources(controllers
         PRIVATE
-        src/todoController.cpp
+        src/todo_controller.cpp
+        src/todo_parser.cpp
         PUBLIC
-        include/todoController.hpp
+        include/todo_controller.hpp
+        include/todo_parser.hpp
 )
 
 

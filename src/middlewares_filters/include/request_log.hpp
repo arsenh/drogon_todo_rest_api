@@ -5,13 +5,15 @@
 #include <chrono>
 #include <sstream>
 
-class RequestLogger : public drogon::HttpFilter<RequestLogger>
+
+class RequestLogger final : public drogon::HttpFilter<RequestLogger>
 {
 public:
     RequestLogger()
     {
         LOG_DEBUG << "Filter registered";
-    };
+    }
+
 
     void doFilter(const drogon::HttpRequestPtr& req,
         drogon::FilterCallback&& fcb,
@@ -37,7 +39,6 @@ private:
         ss << "Body: " << body << "\n";
         return ss.str();
     }
-
     static std::string get_current_datetime()
     {
         const auto now = std::chrono::system_clock::now();
