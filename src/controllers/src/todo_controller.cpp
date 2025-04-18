@@ -22,17 +22,14 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
         return;
     }
 
-    if (const auto todo = m_todo_service.get_todo_by_id(num_id); todo.has_value())
-    {
-        const auto resp = HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo));
-        callback(resp);
-        return;
-    }
-    else
+    const auto todo = m_todo_service.get_todo_by_id(num_id);
+    if (!todo.has_value())
     {
         callback(not_found_response(std::format("resource with id = {} not found", id)));
         return;
     }
+    const auto resp = HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo));
+    callback(resp);
 }
 
 void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
