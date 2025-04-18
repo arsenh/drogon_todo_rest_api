@@ -41,20 +41,27 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
         return;
     }
 
-    const auto& title = (*json)["title"].asString();
-    if (title.empty())
+    try
     {
-        callback(bad_request("Invalid or incorrect title"));
+        const auto& title = (*json)["title"].asString();
+        if (title.empty())
+        {
+            callback(bad_request("Invalid or incorrect title"));
+            return;
+        }
+
+        const auto& description = (*json)["description"].asString();
+        const auto& todo_entity = m_todo_service.create_todo(title, description);
+
+        const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(todo_entity));
+        resp->setStatusCode(drogon::k201Created);
+        callback(resp);
+    }
+    catch (const std::exception& e)
+    {
+        callback(bad_request("Invalid or incorrect json data"));
         return;
     }
-
-    const auto& description = (*json)["description"].asString();
-
-    const auto& todo_entity = m_todo_service.create_todo(title, description);
-
-    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(todo_entity));
-    resp->setStatusCode(drogon::k201Created);
-    callback(resp);
 }
 
 void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)> &&callback, const std::string& id)
@@ -78,22 +85,35 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
     std::optional<std::string> description;
     std::optional<bool> completed;
 
-    if (json->isMember("title"))
+    try
     {
-        title = (*json)["title"].asString();
-        if (title->empty())
+        if (json->isMember("title"))
         {
-            callback(bad_request("Invalid or incorrect title"));
-            return;
+            title = (*json)["title"].asString();
+            if (title->empty())
+            {
+                callback(bad_request("Invalid or incorrect title"));
+                return;
+            }
+        }
+        if (json->isMember("description"))
+        {
+            description = (*json)["description"].asString();
+        }
+        if (json->isMember("completed"))
+        {
+            if ((*json)["completed"].type() != Json::booleanValue)
+            {
+                callback(bad_request("Invalid or incorrect json data"));
+                return;
+            }
+            completed = (*json)["completed"].asBool();
         }
     }
-    if (json->isMember("description"))
+    catch (const std::exception& e)
     {
-        description = (*json)["description"].asString();
-    }
-    if (json->isMember("completed"))
-    {
-        completed = (*json)["completed"].asBool();
+        callback(bad_request("Invalid or incorrect json data"));
+        return;
     }
 
     const auto todo_entity = m_todo_service.update_todo_by_id(num_id, title, description, completed);
