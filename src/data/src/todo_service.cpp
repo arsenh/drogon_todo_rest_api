@@ -57,7 +57,8 @@ std::optional<TodoEntity> TodoService::update_todo_by_id(int id, const std::opti
 
 std::optional<TodoEntity> TodoService::delete_todo_by_id(int id)
 {
-    const auto it = std::remove_if(m_todos.begin(), m_todos.end(), [id](const TodoEntity& entity) {
+    const auto it = std::ranges::find_if(m_todos, [id](const TodoEntity& entity)
+    {
         return entity.id == id;
     });
 
@@ -65,9 +66,10 @@ std::optional<TodoEntity> TodoService::delete_todo_by_id(int id)
     {
         return std::nullopt;
     }
-    TodoEntity temp = *it;
-    m_todos.erase(it, m_todos.end());
-    return temp;
+
+    auto value = *it;
+    m_todos.erase(it);
+    return value;
 }
 
 void TodoService::create_dummy_data_for_test()

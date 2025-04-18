@@ -26,7 +26,7 @@ public:
 private:
     static std::string get_log_data(const drogon::HttpRequestPtr &req)
     {
-        auto addr = req->peerAddr().toIpPort();
+        const auto addr = req->peerAddr().toIpPort();
         std::ostringstream ss;
         ss << "\n[RequestLogger]: " << get_current_datetime() << "\n";
         ss << "Address: " << addr  << "\n";
@@ -38,6 +38,7 @@ private:
         auto body = req->body();
         ss << "Body: " << body << "\n";
         return ss.str();
+        return "";
     }
     static std::string get_current_datetime()
     {

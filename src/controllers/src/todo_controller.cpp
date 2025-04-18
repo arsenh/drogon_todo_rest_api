@@ -5,7 +5,7 @@
 
 #include "todo_parser.hpp"
 
-void Todo::get_todos(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+void Todo::get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
 {
     const auto& todos = m_todo_service.get_todos();
     const auto& json_data = TodoParser::todos_to_json(todos);
@@ -13,40 +13,42 @@ void Todo::get_todos(const HttpRequestPtr &req, std::function<void (const HttpRe
     callback(resp);
 }
 
-void Todo::get_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback, const std::string& id)
+void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id)
 {
     const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
-
     if (!ok)
     {
         callback(not_found_response("invalid id provided"));
+        return;
     }
 
     if (const auto todo = m_todo_service.get_todo_by_id(num_id); todo.has_value())
     {
         const auto resp = HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo));
         callback(resp);
+        return;
     }
     else
     {
         callback(not_found_response(std::format("resource with id = {} not found", id)));
+        return;
     }
 }
 
-void Todo::create_todo(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
 {
     const auto json = req->getJsonObject();
-
     if (!json || !check_json_data_fields_name(*json))
     {
         callback(bad_request("Invalid or incorrect json data"));
+        return;
     }
 
     const auto& title = (*json)["title"].asString();
-
     if (title.empty())
     {
         callback(bad_request("Invalid or incorrect title"));
+        return;
     }
 
     const auto& description = (*json)["description"].asString();
@@ -58,13 +60,13 @@ void Todo::create_todo(const HttpRequestPtr &req, std::function<void (const Http
     callback(resp);
 }
 
-void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback, const std::string& id)
+void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)> &&callback, const std::string& id)
 {
     const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
-
     if (!ok)
     {
         callback(not_found_response("invalid id provided"));
+        return;
     }
 
     const auto json = req->getJsonObject();
@@ -72,6 +74,7 @@ void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
     if (!json || !check_json_data_fields_name(*json))
     {
         callback(bad_request("Invalid or incorrect json data"));
+        return;
     }
 
     std::optional<std::string> title;
@@ -84,6 +87,7 @@ void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
         if (title->empty())
         {
             callback(bad_request("Invalid or incorrect title"));
+            return;
         }
     }
     if (json->isMember("description"))
@@ -96,10 +100,10 @@ void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
     }
 
     const auto todo_entity = m_todo_service.update_todo_by_id(num_id, title, description, completed);
-
     if (!todo_entity.has_value())
     {
         callback(not_found_response(std::format("resource with id = {} not found", id)));
+        return;
     }
 
     const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo_entity));
@@ -107,26 +111,38 @@ void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
     callback(resp);
 }
 
-void Todo::delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback)
+void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id)
 {
-    Json::Value data;
-    data["result"] = "ok";
-    data["message"] = std::format("call: {}", "delete_todo_by_id");
-    auto resp = HttpResponse::newHttpJsonResponse(data);
+    const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
+    if (!ok)
+    {
+        callback(not_found_response("invalid id provided"));
+        return;
+    }
+
+    const auto todo_entity = m_todo_service.delete_todo_by_id(num_id);
+    if (!todo_entity.has_value())
+    {
+        callback(not_found_response(std::format("resource with id = {} not found", id)));
+        return;
+    }
+
+    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo_entity));
+    resp->setStatusCode(drogon::k200OK);
     callback(resp);
 }
 
-HttpResponsePtr Todo::not_found_response(const std::string &message)
+HttpResponsePtr Todo::not_found_response(const std::string& message)
 {
     return create_json_response(message, k404NotFound);
 }
 
-HttpResponsePtr Todo::bad_request(const std::string &message)
+HttpResponsePtr Todo::bad_request(const std::string& message)
 {
     return create_json_response(message, k400BadRequest);
 }
 
-HttpResponsePtr Todo::create_json_response(const std::string &message, const HttpStatusCode code)
+HttpResponsePtr Todo::create_json_response(const std::string& message, const HttpStatusCode code)
 {
     Json::Value json;
     json["error"] = message;
