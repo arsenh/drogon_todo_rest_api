@@ -19,7 +19,7 @@ void Todo::get_todo_by_id(const HttpRequestPtr &req, std::function<void (const H
 
     if (!ok)
     {
-        callback(invalid_id());
+        callback(not_found_response("invalid id provided"));
     }
 
     if (const auto todo = m_todo_service.get_todo_by_id(num_id); todo.has_value())
@@ -64,7 +64,7 @@ void Todo::update_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
 
     if (!ok)
     {
-        callback(invalid_id());
+        callback(not_found_response("invalid id provided"));
     }
 
     const auto json = req->getJsonObject();
@@ -118,28 +118,20 @@ void Todo::delete_todo_by_id(const HttpRequestPtr &req, std::function<void (cons
 
 HttpResponsePtr Todo::not_found_response(const std::string &message)
 {
-    Json::Value json;
-    json["error"] = message;
-    auto resp = HttpResponse::newHttpJsonResponse(json);
-    resp->setStatusCode(k404NotFound);
-    return resp;
-}
-
-HttpResponsePtr Todo::invalid_id()
-{
-    Json::Value json;
-    json["error"] = "invalid id provided";
-    auto resp = HttpResponse::newHttpJsonResponse(json);
-    resp->setStatusCode(k404NotFound);
-    return resp;
+    return create_json_response(message, k404NotFound);
 }
 
 HttpResponsePtr Todo::bad_request(const std::string &message)
 {
+    return create_json_response(message, k400BadRequest);
+}
+
+HttpResponsePtr Todo::create_json_response(const std::string &message, const HttpStatusCode code)
+{
     Json::Value json;
     json["error"] = message;
-    auto resp = drogon::HttpResponse::newHttpJsonResponse(json);
-    resp->setStatusCode(drogon::k400BadRequest);
+    auto resp = HttpResponse::newHttpJsonResponse(json);
+    resp->setStatusCode(code);
     return resp;
 }
 

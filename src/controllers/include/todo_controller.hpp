@@ -29,8 +29,8 @@ private:
 private:
     // controller helper response methods
     static HttpResponsePtr not_found_response(const std::string& message);
-    static HttpResponsePtr invalid_id();
     static HttpResponsePtr bad_request(const std::string& message);
+    static HttpResponsePtr create_json_response(const std::string& message, const HttpStatusCode code);
 
 private:
     // input data validations
