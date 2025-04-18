@@ -27,5 +27,9 @@ private:
     void delete_todo_by_id(const HttpRequestPtr &req, std::function<void (const HttpResponsePtr &)> &&callback);
 
 private:
+    // controller helper response methods
+    static HttpResponsePtr not_found_response(const std::string& message);
+    static HttpResponsePtr invalid_id();
+private:
     TodoService m_todo_service{};
 };
