@@ -30,6 +30,11 @@ private:
     // controller helper response methods
     static HttpResponsePtr not_found_response(const std::string& message);
     static HttpResponsePtr invalid_id();
+    static HttpResponsePtr bad_request(const std::string& message);
+
+private:
+    // input data validations
+    static bool check_json_data_fields_name(const Json::Value& json);
 private:
     TodoService m_todo_service{};
 };
