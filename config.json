@@ -1,0 +1,29 @@
+{
+  "listeners": [
+    {
+      "address": "0.0.0.0",
+      "port": 8080,
+      "https": false
+    }
+  ],
+  "app": {
+    "server_threads": 4,
+    "document_root": "./static",
+    "static_files_path": ["./static"],
+    "upload_path": "./uploads",
+    "file_types": [
+      "gif", "png", "jpg", "js", "css", "html", "ico", "svg",
+      "ttf", "otf", "woff", "woff2", "eot", "txt", "json"
+    ],
+    "static_files": true,
+    "default_page": "index.html",
+    "enable_server_header": true,
+    "home_page": "/"
+  },
+  "controllers": [
+    {
+      "path": "/todos",
+      "controller": "Todo"
+    }
+  ]
+}

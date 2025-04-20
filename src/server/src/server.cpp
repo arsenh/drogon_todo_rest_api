@@ -8,7 +8,6 @@ void Server::run() const
 
     drogon::app().setLogPath("")
      .setLogLevel(trantor::Logger::kDebug)
-     .addListener(mAddr, mPort)
-     .setThreadNum(2)
+     .loadConfigFile("./config.json")
      .run();
 }
