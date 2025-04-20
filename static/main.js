@@ -1,1 +1,0 @@
-alert("Drogon App ALERT");
