@@ -7,6 +7,7 @@ RUN apk add --no-cache \
     make \
     linux-headers \
     perl \
+    boost-build \
     python3 \
     py3-pip \
     && pip3 install --break-system-packages conan
