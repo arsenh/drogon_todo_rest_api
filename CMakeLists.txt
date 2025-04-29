@@ -17,7 +17,7 @@ add_subdirectory(src/middlewares_filters)
 add_subdirectory(src/data)
 
 # Define the executable
-add_executable(todo_api src/main.cpp)
+add_executable(todo_api src/todo_app/main.cpp)
 
 # Link libraries to the executable
 target_link_libraries(todo_api PRIVATE server)

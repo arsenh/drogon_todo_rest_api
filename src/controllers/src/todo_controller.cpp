@@ -1,6 +1,6 @@
 #include "todo_controller.hpp"
 
-#include <format>
+#include <fmt/format.h>
 #include <set>
 
 #include "todo_parser.hpp"
@@ -25,7 +25,7 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
     const auto todo = m_todo_service.get_todo_by_id(num_id);
     if (!todo.has_value())
     {
-        callback(not_found_response(std::format("resource with id = {} not found", id)));
+        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
         return;
     }
     const auto resp = HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo));
@@ -119,7 +119,7 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
     const auto todo_entity = m_todo_service.update_todo_by_id(num_id, title, description, completed);
     if (!todo_entity.has_value())
     {
-        callback(not_found_response(std::format("resource with id = {} not found", id)));
+        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
         return;
     }
 
@@ -140,7 +140,7 @@ void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
     const auto todo_entity = m_todo_service.delete_todo_by_id(num_id);
     if (!todo_entity.has_value())
     {
-        callback(not_found_response(std::format("resource with id = {} not found", id)));
+        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
         return;
     }
 

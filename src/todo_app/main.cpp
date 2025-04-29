@@ -1,4 +1,4 @@
-#include "server/include/server.hpp"
+#include "server.hpp"
 
 int main() {
     const Server server{};
