@@ -2,7 +2,7 @@
 
 #include <drogon/drogon.h>
 
-void Server::run() const
+void Server::run()
 {
     LOG_INFO << "Server started...";
 

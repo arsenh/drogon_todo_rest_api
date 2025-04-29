@@ -15,7 +15,8 @@
   },
 
   "app": {
-    "server_threads": 4,
+    "server_threads": 16,
+	"use_gzip": true,
     "document_root": "./static",
     "static_files_path": ["./static"],
     "upload_path": "./uploads",

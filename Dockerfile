@@ -21,10 +21,10 @@ COPY static /app/static/
 COPY src/ /app/src/
 
 RUN conan profile detect --force
-RUN conan install . --output-folder=build --build=missing -s build_type=Debug
+RUN conan install . --output-folder=build --build=missing -s build_type=Release
 
 WORKDIR /app/build
-RUN cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+RUN cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 RUN make
 
 # Runtime stage
