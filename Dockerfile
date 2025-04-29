@@ -4,6 +4,7 @@ FROM alpine:3.19 AS builder
 RUN apk add --no-cache \
     build-base \
     cmake \
+    make \
     linux-headers \
     perl \
     python3 \
@@ -32,8 +33,8 @@ RUN apk add --no-cache libstdc++
 
 WORKDIR /app
 
-COPY --from=builder /app/build/todo_api /app/todo_api
+COPY --from=builder /app/build/app /app/app
 COPY --from=builder /app/config.json /app/config.json
 COPY --from=builder /app/static /app/static
 
-CMD ["./todo_api"]
+CMD ["./app"]

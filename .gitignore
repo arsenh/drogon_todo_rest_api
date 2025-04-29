@@ -1,3 +1,16 @@
+#Clion dir
+.idea
+
+# CMake generated files
+CMakePresets.json
+CMakeUserPresets.json
+	
+# Build dir
+build
+
+# text documents
+todo.txt
+
 # Prerequisites
 *.d
 
