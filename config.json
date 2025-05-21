@@ -34,5 +34,12 @@
       "path": "/todos",
       "controller": "Todo"
     }
-  ]
+  ],
+
+  "custom_config": {
+    "mongodb": {
+      "uri": "mongodb://localhost:27017",
+      "database": "todo_app"
+    }
+  }
 }

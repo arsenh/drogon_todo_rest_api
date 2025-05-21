@@ -1,7 +1,8 @@
 #include "server.hpp"
 
 int main() {
-    Server::run();
+    Server server{};
+    server.run();
     return 0;
 }
 
