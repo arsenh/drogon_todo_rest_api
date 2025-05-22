@@ -1,4 +1,4 @@
-#include "../include/mongo_dbrepository.hpp"
+#include "mongo_dbrepository.hpp"
 
 MongoDBRepository::MongoDBRepository(const std::string &uri, const std::string &database)
 {

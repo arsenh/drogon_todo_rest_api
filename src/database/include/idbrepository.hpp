@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../data/include/todo.hpp"
+#include "todo.hpp"
 
 class IDBRepository {
 public:

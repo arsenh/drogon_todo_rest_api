@@ -8,7 +8,7 @@ target_sources(database
         include/idbrepository.hpp
         include/mongo_dbrepository.hpp
 )
-target_link_libraries(database PUBLIC fmt::fmt Drogon::Drogon)
+target_link_libraries(database PUBLIC data fmt::fmt Drogon::Drogon)
 
 target_include_directories(database PUBLIC include)
 

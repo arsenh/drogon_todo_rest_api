@@ -1,5 +1,5 @@
 #include "todo_service.hpp"
-#include "../../database/include/dbcontext.hpp"
+#include "dbcontext.hpp"
 #include <algorithm>
 
 #include <drogon/drogon.h>
@@ -7,17 +7,17 @@
 
 std::vector<TodoEntity>& TodoService::get_todos()
 {
-    // auto dbContext = drogon::app().getPlugin<DBContext>();
-    // if (!dbContext)
-    // {
-    //     LOG_ERROR << "DBContext plugin not found!";
-    //     return m_todos;
-    // }
-    // auto db = dbContext->getService();
-    // if (!db)
-    // {
-    //     LOG_ERROR << "DBContext service not found!";
-    // }
+    auto dbContext = drogon::app().getPlugin<DBContext>();
+    if (!dbContext)
+    {
+        LOG_ERROR << "DBContext plugin not found!";
+        return m_todos;
+    }
+    auto db = dbContext->getService();
+    if (!db)
+    {
+        LOG_ERROR << "DBContext service not found!";
+    }
     // db->hello();
     return m_todos;
 }
