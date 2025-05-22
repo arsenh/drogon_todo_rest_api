@@ -10,7 +10,7 @@ target_sources(controllers
 )
 
 
-target_link_libraries(controllers PUBLIC data fmt::fmt Drogon::Drogon)
+target_link_libraries(controllers PUBLIC data database fmt::fmt Drogon::Drogon)
 
 target_include_directories(controllers PUBLIC include)
 

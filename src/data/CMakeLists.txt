@@ -9,7 +9,8 @@ target_sources(controllers
         include/todo.hpp
         include/todo_service.hpp
 )
-target_link_libraries(data PRIVATE)
+#target_link_libraries(data PUBLIC database Drogon::Drogon)
+target_link_libraries(data PUBLIC Drogon::Drogon)
 
 target_include_directories(data PUBLIC include)
 

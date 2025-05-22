@@ -2,9 +2,11 @@ add_library(database STATIC)
 
 target_sources(database
         PRIVATE
-        src/mongodb_manager.cpp
+        src/mongo_dbrepository.cpp
         PUBLIC
-        include/mongodb_manager.hpp
+        include/dbcontext.hpp
+        include/idbrepository.hpp
+        include/mongo_dbrepository.hpp
 )
 target_link_libraries(database PUBLIC fmt::fmt Drogon::Drogon)
 

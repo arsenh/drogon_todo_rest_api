@@ -2,7 +2,7 @@
 
 int main() {
     Server server{};
-    server.run();
+    Server::run();
     return 0;
 }
 

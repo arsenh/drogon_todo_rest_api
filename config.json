@@ -36,10 +36,13 @@
     }
   ],
 
-  "custom_config": {
-    "mongodb": {
-      "uri": "mongodb://localhost:27017",
-      "database": "todo_app"
+  "plugins": [
+    {
+      "name": "DBContext",
+      "config": {
+        "uri": "mongodb://localhost:27017",
+        "database": "qwerty"
+      }
     }
-  }
+  ]
 }

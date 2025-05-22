@@ -10,7 +10,6 @@ public:
 private:
     static bool lead_app_config();
     static bool load_custom_config();
-    static bool connect_mongodb();
 public:
-    void run();
+    static void run();
 };

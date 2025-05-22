@@ -21,6 +21,5 @@ public:
 
 private:
     void create_dummy_data_for_test(); // DELETE: for testing only
-private:
     std::vector<TodoEntity> m_todos;
 };
