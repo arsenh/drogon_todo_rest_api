@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    env_file: .env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  drogon:
+    build: .
+    depends_on:
+      - postgres
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - ./static:/app/static:ro
+
+volumes:
+  pgdata:
+

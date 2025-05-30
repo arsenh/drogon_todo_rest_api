@@ -40,11 +40,6 @@
     {
       "name": "default",
       "rdbms": "postgresql",
-      "host": "127.0.0.1",
-      "port": 5432,
-      "dbname": "drogon-db",
-      "user": "<environment variable POSTGRES_USER must be set>",
-      "passwd": "<environment variable POSTGRES_PASSWORD must be set>",
       "is_fast": false,
       "connection_number": 1
     }

@@ -3,9 +3,11 @@
 #include <drogon/drogon.h>
 #include <json/json.h>
 
-#include <string_view>
 #include <filesystem>
 #include <fstream>
+#include <exception>
+#include <string>
+
 
 Server::Server()
 {
@@ -35,14 +37,36 @@ bool Server::lead_app_config()
     // Inject sensitive data from environment
     const char* postgres_user = std::getenv("POSTGRES_USER");
     const char* postgres_pass = std::getenv("POSTGRES_PASSWORD");
+    const char* postgres_db = std::getenv("POSTGRES_DB");
+    const char* postgres_host = std::getenv("POSTGRES_HOST");
+    const char* postgres_port = std::getenv("POSTGRES_PORT");
 
-    if (postgres_user && postgres_pass) {
+    int port;
+
+    try
+    {
+        port = std::stoi(std::string(postgres_port));
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Invalid port number: " << postgres_port << std::endl;
+        return false;
+    }
+    if (postgres_user
+        && postgres_pass
+        && postgres_db
+        && postgres_host
+        && postgres_port) {
         config["db_clients"][0]["user"] = postgres_user;
         config["db_clients"][0]["passwd"] = postgres_pass;
+        config["db_clients"][0]["dbname"] = postgres_db;
+        config["db_clients"][0]["host"] = postgres_host;
+        config["db_clients"][0]["port"] = port;
     }
     else
     {
-        std::cerr << "Environment variables POSTGRES_USER or POSTGRES_PASSWORD not set!" << std::endl;
+        std::cerr << "One of these environment variables is not set (POSTGRES_USER, "
+                     "POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT)" << std::endl;
         return false;
     }
 

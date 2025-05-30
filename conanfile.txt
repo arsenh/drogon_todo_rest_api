@@ -7,7 +7,6 @@ libpqxx/7.10.1
 [options]
 drogon/1.9.9:with_postgres=True
 drogon/1.9.9:with_postgres_batch=True
-drogon/1.9.9:shared=True
 
 [generators]
 CMakeDeps
