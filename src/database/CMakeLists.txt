@@ -2,13 +2,12 @@ add_library(database STATIC)
 
 target_sources(database
         PRIVATE
-        src/mongo_dbrepository.cpp
+        src/pq_dbrepository.cpp
         PUBLIC
-        include/dbcontext.hpp
         include/idbrepository.hpp
-        include/mongo_dbrepository.hpp
+        include/pq_dbrepository.hpp
 )
-target_link_libraries(database PUBLIC data fmt::fmt Drogon::Drogon)
+target_link_libraries(database PUBLIC data fmt::fmt Drogon::Drogon libpqxx::pqxx)
 
 target_include_directories(database PUBLIC include)
 

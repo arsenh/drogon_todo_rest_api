@@ -8,9 +8,9 @@
 #include <string>
 
 
-class MongoDBRepository final : public IDBRepository {
+class PQDBRepository final : public IDBRepository {
 public:
-    MongoDBRepository(const std::string& uri, const std::string& database);
+    PQDBRepository(const std::string& uri, const std::string& database);
 
 public:
     std::vector<TodoEntity>& get_todos() override;
@@ -24,5 +24,5 @@ public:
 
     std::optional<TodoEntity> delete_todo_by_id(int id) override;
 
-    ~MongoDBRepository() override = default;
+    ~PQDBRepository() override = default;
 };

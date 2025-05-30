@@ -1,5 +1,4 @@
 #include "todo_service.hpp"
-#include "dbcontext.hpp"
 #include <algorithm>
 
 #include <drogon/drogon.h>
@@ -7,18 +6,26 @@
 
 std::vector<TodoEntity>& TodoService::get_todos()
 {
-    auto dbContext = drogon::app().getPlugin<DBContext>();
-    if (!dbContext)
+    auto dbClient = drogon::app().getDbClient();
+    if (!dbClient)
     {
-        LOG_ERROR << "DBContext plugin not found!";
-        return m_todos;
+        LOG_ERROR << "DBClient not found!";
     }
-    auto db = dbContext->getService();
-    if (!db)
+    else
     {
-        LOG_ERROR << "DBContext service not found!";
+        dbClient->execSqlAsync(
+    "SELECT version();",
+    [](const drogon::orm::Result &result) {
+        for (const auto &row : result) {
+            std::string version = row[0].as<std::string>();
+            std::cout << "PostgreSQL version: " << version << std::endl;
+        }
+    },
+    [](const drogon::orm::DrogonDbException &e) {
+        std::cerr << "Database error: " << e.base().what() << std::endl;
+    });
+
     }
-    // db->hello();
     return m_todos;
 }
 

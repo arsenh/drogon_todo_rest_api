@@ -36,13 +36,17 @@
     }
   ],
 
-  "plugins": [
+  "db_clients": [
     {
-      "name": "DBContext",
-      "config": {
-        "uri": "mongodb://localhost:27017",
-        "database": "qwerty"
-      }
+      "name": "default",
+      "rdbms": "postgresql",
+      "host": "127.0.0.1",
+      "port": 5432,
+      "dbname": "drogon-db",
+      "user": "drogon-user",
+      "passwd": "drogon",
+      "is_fast": false,
+      "connection_number": 1
     }
   ]
 }

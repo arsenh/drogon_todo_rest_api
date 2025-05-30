@@ -2,6 +2,9 @@
 
 #include "todo.hpp"
 
+#include <vector>
+#include <optional>
+
 class IDBRepository {
 public:
     virtual std::vector<TodoEntity>& get_todos() = 0;
