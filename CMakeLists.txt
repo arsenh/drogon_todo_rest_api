@@ -14,6 +14,7 @@ find_package(libpqxx REQUIRED)
 
 configure_file(${CMAKE_SOURCE_DIR}/config.json ${CMAKE_BINARY_DIR}/config.json COPYONLY)
 file(COPY ${CMAKE_SOURCE_DIR}/static DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/migrations DESTINATION ${CMAKE_BINARY_DIR})
 
 # Add subdirectories (static libraries)
 add_subdirectory(src/app)

@@ -36,6 +36,14 @@
     }
   ],
 
+  "plugins": [
+    {
+      "name": "SQLMigrationsPlugin",
+      "config": {
+        "migrations_dir": "./migrations"
+      }
+    }],
+
   "db_clients": [
     {
       "name": "default",

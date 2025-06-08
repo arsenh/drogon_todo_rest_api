@@ -2,15 +2,6 @@
 
 #include <pqxx/pqxx>
 
-PQDBRepository::PQDBRepository(const std::string &uri, const std::string &database)
-{
-    LOG_INFO << "MongoDBRepository constructor";
-    LOG_INFO << "URI: " << uri;
-    LOG_INFO << "Database: " << database;
-    // TODO: connect to MongoDB, and initialize mongo client member
-    // TODO: add exception handling for uri and database if empty
-}
-
 std::vector<TodoEntity>& PQDBRepository::get_todos()
 {
     exit(1);

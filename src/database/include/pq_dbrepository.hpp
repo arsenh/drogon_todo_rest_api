@@ -1,7 +1,7 @@
 #pragma once
 
 #include "idbrepository.hpp"
-#include "../../data/include/todo.hpp"
+#include "todo.hpp"
 
 #include <drogon/drogon.h>
 
@@ -9,8 +9,6 @@
 
 
 class PQDBRepository final : public IDBRepository {
-public:
-    PQDBRepository(const std::string& uri, const std::string& database);
 
 public:
     std::vector<TodoEntity>& get_todos() override;

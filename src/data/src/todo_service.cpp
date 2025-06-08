@@ -4,6 +4,12 @@
 #include <drogon/drogon.h>
 
 
+TodoService::TodoService()
+    : m_db_repository(std::make_unique<PQDBRepository>())
+{
+    create_dummy_data_for_test();
+}
+
 std::vector<TodoEntity>& TodoService::get_todos()
 {
     auto dbClient = drogon::app().getDbClient();
