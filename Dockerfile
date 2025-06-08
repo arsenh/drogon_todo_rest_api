@@ -19,6 +19,7 @@ COPY conanfile.txt /app/
 COPY config.json /app/
 COPY static /app/static/
 COPY src/ /app/src/
+COPY migrations/ /app/migrations/
 
 RUN conan profile detect --force
 RUN conan install . --output-folder=build --build=missing -s build_type=Release
@@ -37,5 +38,6 @@ WORKDIR /app
 COPY --from=builder /app/build/app /app/app
 COPY --from=builder /app/config.json /app/config.json
 COPY --from=builder /app/static /app/static
+COPY --from=builder /app/migrations /app/migrations
 
 CMD ["./app"]
