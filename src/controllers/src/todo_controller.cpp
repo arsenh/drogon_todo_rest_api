@@ -65,7 +65,7 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
         [callback](const std::optional<TodoEntity>& todo) {
             if (!todo)
             {
-                callback(internal_server_error(fmt::format("entity insertion failed")));
+                callback(internal_server_error("entity insertion failed"));
                 return;
             }
                 const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
@@ -135,16 +135,20 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    const auto todo_entity = m_todo_service.update_todo_by_id(num_id, title, description, completed);
-    if (!todo_entity.has_value())
-    {
-        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
-        return;
-    }
-
-    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo_entity));
-    resp->setStatusCode(drogon::k200OK);
-    callback(resp);
+    TodoService::update_todo_by_id(num_id, title, description, completed,
+[callback, num_id](const std::optional<TodoEntity>& todo) {
+        if (!todo)
+        {
+            callback(not_found_response(fmt::format("resource with id = {} not found", num_id)));
+            return;
+        }
+            const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
+            resp->setStatusCode(drogon::k200OK);
+            callback(resp);
+        },
+[callback](const TodoServiceError& err) {
+        callback(internal_server_error(err.message));
+    });
 }
 
 void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id)
@@ -156,16 +160,20 @@ void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    const auto todo_entity = m_todo_service.delete_todo_by_id(num_id);
-    if (!todo_entity.has_value())
-    {
-        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
-        return;
-    }
-
-    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo_entity));
-    resp->setStatusCode(drogon::k200OK);
-    callback(resp);
+    TodoService::delete_todo_by_id(num_id,
+[callback, num_id](const std::optional<TodoEntity>& todo) {
+        if (!todo)
+        {
+            callback(not_found_response(fmt::format("resource with id = {} not found", num_id)));
+            return;
+        }
+            const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
+            resp->setStatusCode(drogon::k200OK);
+            callback(resp);
+        },
+[callback](const TodoServiceError& err) {
+        callback(internal_server_error(err.message));
+    });
 }
 
 HttpResponsePtr Todo::not_found_response(const std::string& message)
