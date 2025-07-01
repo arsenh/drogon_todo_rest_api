@@ -5,9 +5,9 @@
 
 void Todo::get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
 {
-    m_todo_service.get_todos(
+    TodoService::get_todos(
     [callback](const std::vector<TodoEntity>& todos) {
-        auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todos_to_json(todos));
+        const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todos_to_json(todos));
         callback(resp);
     },
     [callback](const TodoServiceError& err) {
@@ -24,14 +24,20 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
         return;
     }
 
-    const auto todo = m_todo_service.get_todo_by_id(num_id);
-    if (!todo.has_value())
-    {
-        callback(not_found_response(fmt::format("resource with id = {} not found", id)));
-        return;
-    }
-    const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
-    callback(resp);
+    TodoService::get_todo_by_id(num_id,
+    [callback, num_id](const std::optional<TodoEntity>& todo) {
+        if (!todo)
+        {
+            callback(not_found_response(fmt::format("resource with id = {} not found", num_id)));
+            return;
+        }
+        const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
+        resp->setStatusCode(drogon::k200OK);
+        callback(resp);
+    },
+    [callback](const TodoServiceError& err) {
+        callback(internal_server_error(err.message));
+    });
 }
 
 void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
@@ -53,11 +59,22 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
         }
 
         const auto& description = (*json)["description"].asString();
-        const auto& todo_entity = m_todo_service.create_todo(title, description);
 
-        const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(todo_entity));
-        resp->setStatusCode(drogon::k201Created);
-        callback(resp);
+
+        TodoService::create_todo(title, description,
+        [callback](const std::optional<TodoEntity>& todo) {
+            if (!todo)
+            {
+                callback(internal_server_error(fmt::format("entity insertion failed")));
+                return;
+            }
+                const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
+                resp->setStatusCode(drogon::k201Created);
+                callback(resp);
+            },
+        [callback](const TodoServiceError& err) {
+            callback(internal_server_error(err.message));
+        });
     }
     catch (const std::exception& e)
     {
