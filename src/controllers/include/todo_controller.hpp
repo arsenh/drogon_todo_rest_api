@@ -20,11 +20,11 @@ public:
     METHOD_LIST_END
 
 private:
-    static void get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback);
-    static void get_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
-    static void create_todo(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)> &&callback);
-    static void update_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
-    static void delete_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
+    void get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback);
+    void get_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
+    void create_todo(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)> &&callback);
+    void update_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
+    void delete_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id);
 
 private:
     // controller helper response methods
@@ -37,5 +37,5 @@ private:
     // input data validations
     static bool check_json_data_fields_name(const Json::Value& json);
 private:
-    TodoService m_todo_service{}; //TODO: delete when all function will be static
+    TodoService m_todo_service{};
 };

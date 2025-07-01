@@ -11,16 +11,35 @@
 class PQDBRepository final : public IDBRepository {
 
 public:
-    std::vector<TodoEntity>& get_todos() override;
 
-    std::optional<TodoEntity> get_todo_by_id(int id) override;
+    void get_todos(
+    const std::function<void(const std::vector<TodoEntity>&)>& on_success,
+    const std::function<void(const std::string&)>& on_error) override;
 
-    TodoEntity create_todo(const std::string& title, const std::string& description) override;
+    void get_todo_by_id(
+        int id,
+        const std::function<void(std::optional<TodoEntity>)>& on_success,
+        const std::function<void(const std::string&)>& on_error) override;
 
-    std::optional<TodoEntity> update_todo_by_id(int id, const std::optional<std::string>& title,
-        const std::optional<std::string>& description, const std::optional<bool>& completed) override;
+    void create_todo(
+        const std::string& title,
+        const std::string& description,
+        const std::function<void(std::optional<TodoEntity>)>& on_success,
+        const std::function<void(const std::string&)>& on_error) override;
 
-    std::optional<TodoEntity> delete_todo_by_id(int id) override;
+    void update_todo_by_id(
+        int id,
+        const std::optional<std::string>& title,
+        const std::optional<std::string>& description,
+        const std::optional<bool>& completed,
+        const std::function<void(std::optional<TodoEntity>)>& on_success,
+        const std::function<void(const std::string&)>& on_error) override;
+
+
+    void delete_todo_by_id(
+        int id,
+        const std::function<void(std::optional<TodoEntity>)>& on_success,
+        const std::function<void(const std::string&)>& on_error) override;
 
     ~PQDBRepository() override = default;
 };

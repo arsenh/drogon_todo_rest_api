@@ -5,13 +5,13 @@
 
 void Todo::get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
 {
-    TodoService::get_todos(
+    m_todo_service.get_todos(
     [callback](const std::vector<TodoEntity>& todos) {
         const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todos_to_json(todos));
         callback(resp);
     },
-    [callback](const TodoServiceError& err) {
-        callback(internal_server_error("Internal server error: " + err.message));
+    [callback](const std::string& err) {
+        callback(internal_server_error("Internal server error: " + err));
     });
 }
 
@@ -24,7 +24,7 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
         return;
     }
 
-    TodoService::get_todo_by_id(num_id,
+    m_todo_service.get_todo_by_id(num_id,
     [callback, num_id](const std::optional<TodoEntity>& todo) {
         if (!todo)
         {
@@ -35,8 +35,8 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
         resp->setStatusCode(drogon::k200OK);
         callback(resp);
     },
-    [callback](const TodoServiceError& err) {
-        callback(internal_server_error(err.message));
+    [callback](const std::string& err) {
+        callback(internal_server_error(err));
     });
 }
 
@@ -61,7 +61,7 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
         const auto& description = (*json)["description"].asString();
 
 
-        TodoService::create_todo(title, description,
+        m_todo_service.create_todo(title, description,
         [callback](const std::optional<TodoEntity>& todo) {
             if (!todo)
             {
@@ -72,8 +72,8 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
                 resp->setStatusCode(drogon::k201Created);
                 callback(resp);
             },
-        [callback](const TodoServiceError& err) {
-            callback(internal_server_error(err.message));
+        [callback](const std::string& err) {
+            callback(internal_server_error(err));
         });
     }
     catch (const std::exception& e)
@@ -135,7 +135,7 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    TodoService::update_todo_by_id(num_id, title, description, completed,
+    m_todo_service.update_todo_by_id(num_id, title, description, completed,
 [callback, num_id](const std::optional<TodoEntity>& todo) {
         if (!todo)
         {
@@ -146,8 +146,8 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
             resp->setStatusCode(drogon::k200OK);
             callback(resp);
         },
-[callback](const TodoServiceError& err) {
-        callback(internal_server_error(err.message));
+[callback](const std::string& err) {
+        callback(internal_server_error(err));
     });
 }
 
@@ -160,7 +160,7 @@ void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    TodoService::delete_todo_by_id(num_id,
+    m_todo_service.delete_todo_by_id(num_id,
 [callback, num_id](const std::optional<TodoEntity>& todo) {
         if (!todo)
         {
@@ -171,8 +171,8 @@ void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
             resp->setStatusCode(drogon::k200OK);
             callback(resp);
         },
-[callback](const TodoServiceError& err) {
-        callback(internal_server_error(err.message));
+[callback](const std::string& err) {
+        callback(internal_server_error(err));
     });
 }
 
