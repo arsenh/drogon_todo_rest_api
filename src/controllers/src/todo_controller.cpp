@@ -3,19 +3,21 @@
 #include <fmt/format.h>
 #include <set>
 
-#include "todo_parser.hpp"
-
 void Todo::get_todos(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback)
 {
-    const auto& todos = m_todo_service.get_todos();
-    const auto& json_data = TodoParser::todos_to_json(todos);
-    const auto resp = HttpResponse::newHttpJsonResponse(json_data);
-    callback(resp);
+    m_todo_service.get_todos(
+    [callback](const std::vector<TodoEntity>& todos) {
+        auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todos_to_json(todos));
+        callback(resp);
+    },
+    [callback](const TodoServiceError& err) {
+        callback(internal_server_error("Internal server error: " + err.message));
+    });
 }
 
 void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id)
 {
-    const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
+    const auto [num_id, ok] = TodoEntity::convert_string_to_int(id);
     if (!ok)
     {
         callback(not_found_response("invalid id provided"));
@@ -28,7 +30,7 @@ void Todo::get_todo_by_id(const HttpRequestPtr& req, std::function<void (const H
         callback(not_found_response(fmt::format("resource with id = {} not found", id)));
         return;
     }
-    const auto resp = HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo));
+    const auto resp = HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo));
     callback(resp);
 }
 
@@ -53,7 +55,7 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
         const auto& description = (*json)["description"].asString();
         const auto& todo_entity = m_todo_service.create_todo(title, description);
 
-        const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(todo_entity));
+        const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(todo_entity));
         resp->setStatusCode(drogon::k201Created);
         callback(resp);
     }
@@ -66,7 +68,7 @@ void Todo::create_todo(const HttpRequestPtr& req, std::function<void (const Http
 
 void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)> &&callback, const std::string& id)
 {
-    const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
+    const auto [num_id, ok] = TodoEntity::convert_string_to_int(id);
     if (!ok)
     {
         callback(not_found_response("invalid id provided"));
@@ -123,14 +125,14 @@ void Todo::update_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo_entity));
+    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo_entity));
     resp->setStatusCode(drogon::k200OK);
     callback(resp);
 }
 
 void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr&)>&& callback, const std::string& id)
 {
-    const auto [num_id, ok] = TodoParser::convert_string_to_int(id);
+    const auto [num_id, ok] = TodoEntity::convert_string_to_int(id);
     if (!ok)
     {
         callback(not_found_response("invalid id provided"));
@@ -144,7 +146,7 @@ void Todo::delete_todo_by_id(const HttpRequestPtr& req, std::function<void (cons
         return;
     }
 
-    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoParser::todo_to_json(*todo_entity));
+    const auto resp = drogon::HttpResponse::newHttpJsonResponse(TodoEntity::todo_to_json(*todo_entity));
     resp->setStatusCode(drogon::k200OK);
     callback(resp);
 }
@@ -157,6 +159,11 @@ HttpResponsePtr Todo::not_found_response(const std::string& message)
 HttpResponsePtr Todo::bad_request(const std::string& message)
 {
     return create_json_response(message, k400BadRequest);
+}
+
+HttpResponsePtr Todo::internal_server_error(const std::string& message)
+{
+    return create_json_response(message, k500InternalServerError);
 }
 
 HttpResponsePtr Todo::create_json_response(const std::string& message, const HttpStatusCode code)

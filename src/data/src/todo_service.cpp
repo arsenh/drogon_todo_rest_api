@@ -10,29 +10,37 @@ TodoService::TodoService()
     create_dummy_data_for_test();
 }
 
-std::vector<TodoEntity>& TodoService::get_todos()
+void TodoService::get_todos(const std::function<void(const std::vector<TodoEntity>&)>& on_success,
+                                                const std::function<void(const TodoServiceError&)>& on_error)
 {
+    const std::string sql = "SELECT * FROM todos;";
     auto dbClient = drogon::app().getDbClient();
     if (!dbClient)
     {
         LOG_ERROR << "DBClient not found!";
+        on_error(TodoServiceError{"DBClient not found!"});
+        return;
     }
-    else
-    {
-        dbClient->execSqlAsync(
-    "SELECT version();",
-    [](const drogon::orm::Result &result) {
-        for (const auto &row : result) {
-            std::string version = row[0].as<std::string>();
-            std::cout << "PostgreSQL version: " << version << std::endl;
-        }
-    },
-    [](const drogon::orm::DrogonDbException &e) {
-        std::cerr << "Database error: " << e.base().what() << std::endl;
-    });
 
-    }
-    return m_todos;
+    dbClient->execSqlAsync(
+        sql,
+        [on_success](const drogon::orm::Result &result) {
+        std::vector<TodoEntity> todos;
+        for (const auto& row : result) {
+            TodoEntity todo;
+            todo.id = row["id"].as<int>();
+            todo.title = row["title"].as<std::string>();
+            todo.description = row["description"].isNull()? row["description"].as<std::string>() : "";
+            todo.completed = row["completed"].as<bool>();
+            todo.created_at = TodoEntity::parse_ISO8601(row["created_at"].as<std::string>());
+            todos.push_back(std::move(todo));
+        }
+        on_success(todos);
+    },
+    [on_error](const drogon::orm::DrogonDbException &e) {
+        LOG_ERROR << "Database error: " << e.base().what();
+        on_error(TodoServiceError{std::string("Database error: ") + e.base().what()});
+    });
 }
 
 std::optional<TodoEntity> TodoService::get_todo_by_id(int id)
