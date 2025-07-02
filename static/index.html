@@ -1,1 +1,47 @@
-<h1>Drogon Todo App</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Todo App</title>
+    <!-- Link the external CSS file -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📝 Todo Manager</h1>
+        <p>Organize your tasks efficiently</p>
+    </div>
+
+    <div id="alert-container"></div>
+
+    <form id="todo-form" class="todo-form">
+        <div class="form-group">
+            <label for="title">Title *</label>
+            <input type="text" id="title" name="title" required />
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Optional description..."></textarea>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Add Todo</button>
+            <button type="button" id="cancel-edit" class="btn btn-secondary hidden">Cancel</button>
+        </div>
+    </form>
+
+    <div class="todos-section">
+        <div class="todos-header">
+            <h2>Your Todos</h2>
+            <div class="todos-count" id="todos-count">0 todos</div>
+        </div>
+        <div id="loading" class="loading hidden">Loading todos...</div>
+        <div id="todos-container"></div>
+    </div>
+</div>
+
+<!-- Link the external JS file at the end of the body -->
+<script src="main.js"></script>
+</body>
+</html>
